@@ -1,4 +1,6 @@
-FROM php:8.1-apache
+# Get selected PHP image
+ARG PHP_VERSION
+FROM php:${PHP_VERSION}-apache
 
 # timezone / date   
 RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
@@ -6,7 +8,7 @@ RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive t
 # install packages
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
-  less vim wget unzip rsync git nano default-mysql-client libzip-dev ssl-cert \
+  less wget unzip rsync git nano default-mysql-client libzip-dev ssl-cert \
   libcurl4-openssl-dev libfreetype6 libjpeg62-turbo libpng-dev libjpeg-dev libxml2-dev libxpm4 && \
   apt-get clean && \
   apt-get autoremove -y && \
@@ -18,12 +20,10 @@ RUN docker-php-ext-configure gd --with-jpeg && \
   docker-php-ext-install -j$(nproc) zip bcmath soap pdo_mysql gd
 
 # composer stuff
-RUN php -r 'readfile("https://getcomposer.org/installer");' > composer-setup.php \
-  && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-  && rm -f composer-setup.php \
-  && chown www-data:www-data /var/www
+COPY --from=composer/composer:latest-bin /composer /usr/bin/composer 
 
 # prepare entrypoint.d pattern
+RUN chown www-data:www-data /var/www
 RUN mkdir /entrypoint.d
 COPY ./files/entrypoint.sh /entrypoint.sh
 COPY ./entrypoint.d/* /entrypoint.d/

@@ -3,7 +3,10 @@ version: '3'
 services:
 
   oxid6_apache:
-    build: container/apache/.
+    build: 
+      context: container/apache/.
+      args:
+        - PHP_VERSION=${PHP_VERSION}
     hostname: ${DOMAIN}
     restart: unless-stopped
     depends_on:
