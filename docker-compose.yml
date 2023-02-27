@@ -8,6 +8,7 @@ services:
       args:
         - PHP_VERSION=${PHP_VERSION}
     hostname: ${DOMAIN}
+    container_name: ox6-apache
     restart: unless-stopped
     depends_on:
       - oxid6_mysql
@@ -30,6 +31,7 @@ services:
   oxid6_mysql:
     image: mariadb:10.4 # officially tested version by Oxid
     hostname: mysql.${DOMAIN}
+    container_name: ox6-db
     restart: always
     volumes:
       - ./data/mysql/:/var/lib/mysql
@@ -42,11 +44,13 @@ services:
   oxid6_mailhog:
     hostname: mailhog.${DOMAIN}
     image: mailhog/mailhog
+    container_name: ox6-mailhog
     ports:
       - ${MAILHOG_PORT}:8025
 
   oxid6_phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: ox6-pma
     ports:
       - ${PHPMYADMIN_PORT}:80
     environment:

@@ -1,6 +1,8 @@
+# syntax=docker/dockerfile:1
+
 # Get selected PHP image
 ARG PHP_VERSION
-FROM php:${PHP_VERSION}-apache
+FROM php:${PHP_VERSION}-apache AS build
 
 # timezone / date   
 RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
@@ -22,6 +24,7 @@ RUN docker-php-ext-configure gd --with-jpeg && \
 # composer stuff
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer 
 
+FROM build
 # prepare entrypoint.d pattern
 RUN chown www-data:www-data /var/www
 RUN mkdir /entrypoint.d
