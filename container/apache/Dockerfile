@@ -1,6 +1,4 @@
-FROM php:8.0-apache
-
-MAINTAINER module@proudcommerce.com
+FROM php:8.1-apache
 
 # timezone / date   
 RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
@@ -8,7 +6,7 @@ RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive t
 # install packages
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
-  less vim wget unzip rsync git default-mysql-client libzip-dev ssl-cert \
+  less vim wget unzip rsync git nano default-mysql-client libzip-dev ssl-cert \
   libcurl4-openssl-dev libfreetype6 libjpeg62-turbo libpng-dev libjpeg-dev libxml2-dev libxpm4 && \
   apt-get clean && \
   apt-get autoremove -y && \

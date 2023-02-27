@@ -5,7 +5,7 @@ services:
   oxid6_apache:
     build: container/apache/.
     hostname: ${DOMAIN}
-    restart: always
+    restart: unless-stopped
     depends_on:
       - oxid6_mysql
     volumes:
@@ -25,8 +25,7 @@ services:
       - oxid6_mailhog:mail.server
       
   oxid6_mysql:
-    platform: 'linux/x86_64'
-    image: mysql:5.7
+    image: mariadb:10.4 # officially tested version by Oxid
     hostname: mysql.${DOMAIN}
     restart: always
     volumes:
@@ -39,12 +38,12 @@ services:
 
   oxid6_mailhog:
     hostname: mailhog.${DOMAIN}
-    image: mailhog/mailhog:latest
+    image: mailhog/mailhog
     ports:
       - ${MAILHOG_PORT}:8025
 
   oxid6_phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
+    image: phpmyadmin/phpmyadmin
     ports:
       - ${PHPMYADMIN_PORT}:80
     environment:
