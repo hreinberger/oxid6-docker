@@ -10,19 +10,22 @@ RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive t
 # install packages
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
-  less wget unzip rsync git nano default-mysql-client libzip-dev ssl-cert \
+  less wget unzip rsync git nano default-mysql-client libzip-dev ssl-cert openssh-client \
   libcurl4-openssl-dev libfreetype6 libjpeg62-turbo libpng-dev libjpeg-dev libxml2-dev libxpm4 && \
   apt-get clean && \
   apt-get autoremove -y && \
   rm -rf /var/lib/apt/lists/* && \
-  echo "export TERM=xterm" >> /root/.bashrc
+  echo "export TERM=xterm" >> /root/.bashrc && \
+  mkdir -p /root/.ssh && \
+  touch /root/.ssh/known_hosts && \
+  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 # install php extensions
 RUN docker-php-ext-configure gd --with-jpeg && \
   docker-php-ext-install -j$(nproc) zip bcmath soap pdo_mysql gd
 
 # composer stuff
-COPY --from=composer/composer:latest-bin /composer /usr/bin/composer 
+COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 
 FROM build
 # prepare entrypoint.d pattern

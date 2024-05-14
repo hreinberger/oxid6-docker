@@ -1,9 +1,6 @@
-version: '3'
-
 services:
-
   oxid6_apache:
-    build: 
+    build:
       context: container/apache/.
       args:
         - PHP_VERSION=${PHP_VERSION}
@@ -22,17 +19,17 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
     ports:
       - ${APACHE_PORT}:80
       - ${APACHE_HTTPS_PORT}:443
     links:
       - oxid6_mailhog:mail.server
-      
+
   oxid6_mysql:
     image: mariadb:10.4 # officially tested version by Oxid
-    hostname: mysql.${DOMAIN}
     container_name: ox6-db
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./data/mysql/:/var/lib/mysql
     environment:
@@ -42,7 +39,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
   oxid6_mailhog:
-    hostname: mailhog.${DOMAIN}
     image: mailhog/mailhog
     container_name: ox6-mailhog
     ports:
@@ -55,3 +51,10 @@ services:
       - ${PHPMYADMIN_PORT}:80
     environment:
       PMA_HOST: oxid6_mysql
+
+  oxid6_tunnel:
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
