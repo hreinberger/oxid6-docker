@@ -27,9 +27,9 @@ $this->dbPort = 3306; // tcp port to which the database is bound
 $this->dbName = \getenv('MYSQL_DATABASE'); // database name
 $this->dbUser = \getenv('MYSQL_USER'); // database user name
 $this->dbPwd = \getenv('MYSQL_PASSWORD'); // database user password
-$this->sShopURL = 'http://'.\getenv('DOMAIN').':'.\getenv('APACHE_PORT'); // eShop base url, required
-$this->sSSLShopURL = 'https://'.\getenv('DOMAIN').':'.\getenv('APACHE_HTTPS_PORT'); // eShop SSL url, optional
-$this->sAdminSSLURL = 'https://'.\getenv('DOMAIN').':'.\getenv('APACHE_HTTPS_PORT').'/admin'; // eShop Admin SSL url, optional
+$this->sShopURL = 'http://'.\getenv('DOMAIN'); // eShop base url, required
+$this->sSSLShopURL = 'https://'.\getenv('DOMAIN'); // eShop SSL url, optional
+$this->sAdminSSLURL = 'https://'.\getenv('DOMAIN').'/admin'; // eShop Admin SSL url, optional
 $this->sShopDir = '/var/www/html/source';
 $this->sCompileDir = '/var/www/html/source/tmp';
 
